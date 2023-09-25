@@ -1,0 +1,47 @@
+import requests
+import json
+
+# Set your Jira server URL and API endpoint
+jira_url = "https://rsvp5507.atlassian.net"
+api_endpoint = "/rest/api/2/issue/"
+
+# Set your Jira username and API token or password
+username = "rsvp**"
+api_token = "A***"  # Use an API token or password for authentication
+
+# Set the project key where you want to create the issue
+project_key = "TC"
+
+# Define the issue data
+issue_data = {
+    "fields": {
+        "project": {"key": project_key},
+        "summary": "New Issue Summary",
+        "description": "Description of the new issue",
+        "issuetype": {"name": "Appli"},  # Change the issue type as needed
+    }
+}
+
+# Create headers with authentication
+headers = {
+    "Content-Type": "application/json",
+}
+auth = (username, api_token)
+
+# Make the API request to create the issue
+response = requests.post(
+    f"{jira_url}{api_endpoint}",
+    headers=headers,
+    auth=auth,
+    data=json.dumps(issue_data),
+)
+
+# Check the response status
+if response.status_code == 201:
+    print("Issue created successfully!")
+    issue_data = response.json()
+    issue_key = issue_data["key"]
+    print(f"Issue Key: {issue_key}")
+else:
+    print(f"Failed to create issue. Status code: {response.status_code}")
+    print(response.text)
